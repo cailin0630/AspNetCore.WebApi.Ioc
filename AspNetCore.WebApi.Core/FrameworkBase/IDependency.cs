@@ -2,5 +2,6 @@
 {
     public interface IDependency
     {
+        int key { get; set; }
     }
 }

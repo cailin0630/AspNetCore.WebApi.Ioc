@@ -8,5 +8,7 @@ namespace AspNetCore.WebApi.Service
         {
             return text;
         }
+
+        public int key { get; set; } = 1;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AspNetCore.WebApi.Core.FrameworkBase;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Linq;
+using System.Reflection;
 
 namespace AspNetCore.WebApi.Core.Infrastructure
 {
@@ -10,29 +10,37 @@ namespace AspNetCore.WebApi.Core.Infrastructure
         public static void InitializeIoc(IServiceCollection serviceCollection)
         {
             //找到所有继承IDependency的Assemblies
-            //var ass = Assembly.Load("AspNetCore.WebApi.IService.dll").GetTypes();
-            var assemtestblies = AppDomain.CurrentDomain.GetAssemblies().Where(p => p.FullName.StartsWith("AspNetCore.WebApi"));
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IDependency))))
-                .ToArray();
+            Assembly[] assemblies =
+            {
+                Assembly.Load("AspNetCore.WebApi.Core"),
+                Assembly.Load("AspNetCore.WebApi.IService"),
+                Assembly.Load("AspNetCore.WebApi.Service")
+            };
+            //var iservices = Assembly.Load("AspNetCore.WebApi.IService").GetTypes();
+            //var services = Assembly.Load("AspNetCore.WebApi.IService").GetTypes();
+            //var assemtestblies = AppDomain.CurrentDomain.GetAssemblies().Where(p => p.FullName.StartsWith("AspNetCore.WebApi"));
+            //var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+            //    .SelectMany(a => a.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IDependency))))
+            //    .ToArray();
 
             //找到Assemblies中的所有接口
-            var interfaces = assemblies.Where(p => p.IsInterface).ToArray();
-
-            foreach (var serviceInterface in interfaces)
-            {
-                //找到所有serviceInterface的实现实例
-                var serviceInstances = assemblies
-                    .Where(p => serviceInterface.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract)
-                    .ToArray();
-                if (serviceInstances.Length == 0)
-                    continue;
-                foreach (var serviceInstance in serviceInstances)
+            var types = assemblies
+                .SelectMany(a => a.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(IDependency))))
+                .ToArray();
+            var tmpTypes = types.Where(_ => _.IsClass);
+            var didatas = types.Where(t => t.IsInterface)
+                .Select(t => new
                 {
-                    //注册接口和实例
-                    serviceCollection.AddScoped(serviceInterface, serviceInstance);
-                }
-            }
+                    serviceType = t,
+                    implementationType = tmpTypes.FirstOrDefault(c => c.GetInterfaces().Contains(t))
+                }).ToList();
+
+            didatas.ForEach(t =>
+            {
+                if (t.implementationType != null)
+                    serviceCollection.AddScoped(t.serviceType, t.implementationType);
+            });
+
 
         }
     }
