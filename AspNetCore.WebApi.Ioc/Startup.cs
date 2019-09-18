@@ -27,7 +27,10 @@ namespace AspNetCore.WebApi.Ioc
                 Console.WriteLine(configurationSection.Key + ":" + configurationSection.Value);
             }
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            SystemStartup.InitializeIoc(services);
+
+            SystemStartup.LoadConfig(Configuration);
+
+            SystemStartup.InitializeIoc(services, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

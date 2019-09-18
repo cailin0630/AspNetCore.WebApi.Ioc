@@ -20,6 +20,7 @@
     <ProjectReference Include="..\AspNetCore.WebApi.Core\AspNetCore.WebApi.Core.csproj" />
     <ProjectReference Include="..\AspNetCore.WebApi.IService\AspNetCore.WebApi.IService.csproj" />
     <ProjectReference Include="..\AspNetCore.WebApi.Service\AspNetCore.WebApi.Service.csproj" />
+    <ProjectReference Include="..\AspNetCore.WebApi.ShangHai10Yuan\AspNetCore.WebApi.ShangHai10Yuan.csproj" />
   </ItemGroup>
 
 </Project>

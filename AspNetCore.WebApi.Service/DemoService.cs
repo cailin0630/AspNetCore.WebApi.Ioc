@@ -5,16 +5,15 @@ namespace AspNetCore.WebApi.Service
 {
     public class DemoService : IDemoService
     {
-        public string GetString(string text)
+        public virtual string GetString(string text)
         {
             return text;
         }
 
-        public async Task NoReturnTask()
+        public virtual async Task NoReturnTask()
         {
             return;
         }
 
-        public int key { get; set; } = 1;
     }
 }
