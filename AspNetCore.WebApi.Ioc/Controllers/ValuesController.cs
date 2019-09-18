@@ -1,5 +1,6 @@
 ﻿using AspNetCore.WebApi.IService;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace AspNetCore.WebApi.Ioc.Controllers
 {
@@ -15,9 +16,10 @@ namespace AspNetCore.WebApi.Ioc.Controllers
 
         // GET api/values
         [HttpGet]
-        public ActionResult<string> Get()
+        public async Task<ActionResult<string>> Get()
         {
-            return _demoService.GetString("123");
+            await _demoService.NoReturnTask();
+            return await Task.FromResult(_demoService.GetString("123"));
             //return new string[] { "value1", "value2" };
         }
 
